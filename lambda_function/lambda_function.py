@@ -5,6 +5,7 @@ def lambda_handler(event, context):
     print("Hello,World!")
     print("What's up?")
     print("What's up????")
+    print("surya")
     return {
         'statusCode': 200,
         'body': json.dumps('Hello from Lambda!')
