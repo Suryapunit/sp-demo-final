@@ -1,17 +1,30 @@
+# This is the display name shown in the GitHub Actions tab.
 name: Deploy Lambda Function
 
+# This workflow runs automatically when you push code to the main branch.
 on:
   push:
     branches:
       - main
 
+# Job Defination
+# A job named deploy is defined.
+# It runs on a fresh Ubuntu Linux virtual machine hosted by GitHub.
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
+# Checkout the Code
+# Download our GitHub repository code into the virtual machine so the workflow can use it.
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+# Configure AWS Credentials
+# This securely configures the AWS CLI on the runner using GitHub Secrets (which you added in repo settings).
+# It allows the aws CLI commands to work with your AWS account.
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -20,9 +33,20 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+# Zip our Lambda Code
+# Creates a lambda.zip file without including folder paths.
+
       - name: Zip Lambda function
         run: |
           zip -j lambda.zip lambda_function/lambda_function.py
+
+# Deploy to AWS Lambda
+#Uses the AWS CLI to update your existing Lambda function.
+
+# --function-name: Passed from a GitHub Secret to keep the function name flexible and secure.
+
+# --zip-file: Uploads your packaged code from the runner to your Lambda.
+
 
       - name: Deploy to Lambda
         run: |
